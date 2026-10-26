@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edsel Villanueva| IT Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="cert.css">
+<script>
+  /* apply saved theme before the page paints, so there is no flash */
+  try { var t = localStorage.getItem("theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+</script>
+<style>
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ---------- AI LITERACY EVIDENCE: clickable row + preview popup ---------- */
+.preview-link {
+  display: flex; align-items: center; gap: 18px; width: 100%;
+  padding: 18px 22px; border-radius: 16px; cursor: pointer;
+}
+.preview-link > div { flex: 1; min-width: 0; }
+.preview-link strong { display: block; color: var(--ink); }
+.preview-link span:not(.chip-icon) { display: block; font-size: 0.85rem; }
+.preview-link .cert-open { margin-left: auto; font-size: 0.85rem; color: var(--muted); transition: color 0.25s, transform 0.3s var(--ease); }
+.cert-list li:hover .preview-link .cert-open, .preview-link:focus-visible .cert-open { color: var(--ink); transform: scale(1.15); }
+.preview-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 16px; }
+.doc-preview {
+  width: min(96vw, 1000px); max-height: calc(100vh - 100px); overflow-y: auto;
+  padding: 36px 32px; border-radius: 20px; background: var(--bg); color: var(--text);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  transform: scale(0.96); transition: transform 0.35s var(--ease);
+}
+.preview-modal.open .doc-preview { transform: none; }
+.doc-preview h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin-bottom: 12px; }
+.doc-preview .lead { margin-bottom: 26px; }
+.doc-preview .label { margin: 26px 0 16px; }
+.doc-preview .log-list { display: grid; gap: 14px; }
+.doc-preview .log-entry { background: var(--card); border: 1px solid var(--line); border-radius: 24px; }
+.doc-preview .log-entry[open] { border-color: var(--accent); }
+.doc-preview .log-entry summary { display: flex; align-items: center; gap: 18px; padding: 18px 22px; cursor: pointer; list-style: none; }
+.doc-preview .log-entry summary::-webkit-details-marker { display: none; }
+.doc-preview .log-entry summary > div { flex: 1; min-width: 0; }
+.doc-preview .log-entry summary strong { display: block; font-size: 0.95rem; color: var(--ink); }
+.doc-preview .log-entry summary span:not(.chip-icon) { display: block; font-size: 0.8rem; }
+.doc-preview .log-open { margin-left: auto; font-size: 0.85rem; color: var(--muted); transition: transform 0.3s var(--ease); }
+.doc-preview .log-entry[open] .log-open { transform: rotate(180deg); color: var(--ink); }
+.doc-preview .log-body { display: grid; gap: 14px; padding: 0 22px 22px 80px; }
+.doc-preview .log-body dt { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.doc-preview .log-body dd { font-size: 0.9rem; }
+.doc-preview .log-qa { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.doc-preview .log-qa .info-card { padding: 24px; }
+.doc-preview .log-qa h3 { font-size: 1rem; }
+@media (max-width: 860px) {
+  .doc-preview { padding: 26px 20px; }
+  .doc-preview .log-body { padding-left: 22px; }
+}
+
+/* ---------- ABOUT ME: clickable card + popup ---------- */
+.about-link {
+  display: flex; align-items: center; gap: 18px; margin-top: 40px;
+  padding: 22px 26px; background: var(--card); border: 1px solid var(--line); border-radius: 24px;
+  transition: transform 0.35s var(--ease), border-color 0.3s, box-shadow 0.3s;
+}
+.about-link:hover { transform: translateY(-4px); border-color: var(--accent-2); box-shadow: var(--shadow); }
+.about-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.about-link > div { flex: 1; min-width: 0; }
+.about-link strong { display: block; font-size: 1rem; color: var(--ink); }
+.about-link span:not(.chip-icon):not(.about-btn) { display: block; font-size: 0.85rem; }
+.about-btn { flex-shrink: 0; padding: 10px 18px; font-size: 0.7rem; }
+.about-preview { width: min(94vw, 680px); }
+.about-preview h1 { font-size: clamp(1.9rem, 4vw, 2.5rem); margin-bottom: 18px; }
+.about-preview p { font-size: 0.98rem; line-height: 1.8; margin-bottom: 16px; }
+.about-preview .label { margin-bottom: 12px; }
+@media (max-width: 560px) {
+  .about-link { flex-wrap: wrap; }
+  .about-btn { width: 100%; }
+}
+
+/* ---------- MOCK INTERVIEW VIDEO POPUP ---------- */
+.video-card { cursor: pointer; }
+.video-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.video-card .play-btn { margin-top: 18px; }
+.video-box {
+  position: relative; width: min(94vw, 1000px);
+  border-radius: 20px; overflow: hidden; background: #000;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  transform: scale(0.96); transition: transform 0.35s var(--ease);
+}
+.video-modal.open .video-box { transform: none; }
+.video-box video { display: block; width: 100%; max-height: calc(100vh - 120px); aspect-ratio: 16 / 9; background: #000; }
+
+/* ---------- CERTIFICATE POPUP ---------- */
+.cert-stage { display: flex; flex-direction: column; align-items: center; gap: 14px; width: min(94vw, 1000px); max-height: calc(100vh - 80px); }
+.cert-stage img { display: block; max-width: 100%; max-height: calc(100vh - 100px); object-fit: contain; border-radius: 12px; box-shadow: 0 24px 80px rgba(0,0,0,0.55); background: #fff; }
+.cert-stage iframe { width: 100%; height: calc(100vh - 140px); border: 0; border-radius: 12px; background: #fff; box-shadow: 0 24px 80px rgba(0,0,0,0.55); }
+.cert-stage [hidden] { display: none !important; }
+.cert-fallback { flex-shrink: 0; }
+
+/* ---------- EMPLOYABILITY POPUP ---------- */
+.emp-card { cursor: pointer; }
+.emp-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.emp-card .emp-btn { margin-top: 18px; }
+.emp-preview { width: min(94vw, 560px); }
+.emp-preview .chip-icon { margin-bottom: 14px; }
+.emp-preview h1 { font-size: clamp(1.7rem, 4vw, 2.2rem); margin-bottom: 16px; }
+.emp-preview p { font-size: 0.98rem; line-height: 1.85; }
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-inner">
+    <p class="loader-name">EDSEL VILLANUEVA</p>
+    <p class="loader-sub">Portfolio loading</p>
+    <div class="loader-bar"><span id="loaderBar"></span></div>
+  </div>
+</div>
+
+<!-- FLOATING NAV -->
+<header class="nav-wrap">
+  <div class="nav">
+    <a class="logo" href="#home">PORTFOLIO.</a>
+
+    <nav id="menu" aria-label="Main">
+      <a href="#home" class="active">Home</a>
+      <a href="#profile">Profile</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#problem-solving">Problem-Solving</a>
+      <a href="#employability">Employability</a>
+      <a href="#resume">Resume</a>
+      <a href="#certificates">Certificates</a>
+      <a href="#ai-literacy">AI Literacy</a>
+      <a href="#github">GitHub</a>
+      <a href="#contact">Contact</a>
+      <a href="#reflection">Reflection</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeBtn" aria-label="Switch light or dark mode"><i class="fa-solid fa-moon"></i></button>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="hero">
+  <div class="hero-text">
+    <h1 class="reveal">Hi, I'm EDSEL VILLANUEVA</h1>
+    <p class="typing reveal"><span id="typed"></span><span class="caret"></span></p>
+    <p class="lead reveal">BSIT student and aspiring web developer and mobileapp developer. I design and build websites and mobile applications that are well organized, and easy to use.</p>
+    <div class="buttons reveal">
+      <a class="btn dark" href="#projects">Explore work <i class="fa-solid fa-arrow-right"></i></a>
+      <a class="btn light" href="resume.pdf" download>Download CV <i class="fa-solid fa-download"></i></a>
+    </div>
+    <div class="connect reveal">
+      <p class="label">Connect</p>
+      <div class="socials">
+        <a href="https://web.facebook.com/rowena.c.espayos" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://github.com/edselvillanueva980" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/edsel-villanueva-479805441/?isSelfProfile=false" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual reveal">
+    <div class="photo-circle">
+      <img src="edsel.jpg" alt="Photo of Edsel Villanueva">
+    </div>
+    <ul class="chips">
+      <li><span class="chip-icon"><i class="fa-solid fa-graduation-cap"></i></span> BSIT Student</li>
+      <li><span class="chip-icon"><i class="fa-solid fa-code"></i></span> Mobile App Developer</li>
+      <li><span class="chip-icon"><i class="fa-solid fa-bullseye"></i></span> Web Developer</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 1. PROFESSIONAL PROFILE -->
+<section id="profile">
+  <header class="sec-head reveal">
+    <p class="label">Discover</p>
+    <h2>Professional Profile</h2>
+  </header>
+
+  <div class="profile-grid">
+    <div class="profile-photo reveal">
+      <img src="edsel.jpg" alt="Photo of Edsel Villanueva">
+    </div>
+
+    <div class="profile-info">
+      <div class="two-col">
+        <div class="reveal">
+          <h3 class="underlined">Who Am I</h3>
+          <p> Hi! I'm EDSEL VILLANUEVA, a fourth-year BSIT student specializing in mobile development and web development.<br><br> I am motivated to work in the IT field because I want to apply my technical skills to real-world problems, continue learning new technologies, and develop solutions that can make processes more efficient.</p>
+        </div>
+        <div class="reveal">
+          <h3 class="underlined">My Goal</h3>
+          <p>The goal is to become a proficient mobile app developer and web developer that plans and manages IT projects, teams, schedules, and budgets.</p>
+        </div>
+      </div>
+
+      <h3 class="bar reveal">Personal Details</h3>
+      <dl class="details reveal">
+        <div><dt>Full name</dt><dd>EDSEL VILLANUEVA</dd></div>
+        <div><dt>BSIT specialization</dt><dd>Mobile Development and Web Development</dd></div>
+        <div><dt>Target IT position</dt><dd>mobile app developer</dd></div>
+        <div><dt>Preferred IT field</dt><dd>Mobile Development and Web Development</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <a class="about-link reveal" href="#about-me" aria-haspopup="dialog">
+    <span class="chip-icon"><i class="fa-solid fa-user"></i></span>
+    <div><strong>About Me</strong><span>My BSIT background, strengths, goals, and values</span></div>
+    <span class="btn outline about-btn">Read more <i class="fa-solid fa-arrow-right"></i></span>
+  </a>
+</section>
+
+<!-- 2. TECHNICAL SKILLS -->
+<section id="skills">
+  <header class="sec-head reveal">
+    <p class="label">Expertise</p>
+    <h2>Technical Skills</h2>
+  </header>
+
+  <div class="skill-row reveal">
+    <div class="skill-intro">
+      <h3>Programming</h3>
+      <p>The languages I use to build websites and applications.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile"><i class="fa-brands fa-html5"></i><span>HTML</span></div>
+      <div class="tile"><i class="fa-brands fa-css3-alt"></i><span>CSS</span></div>
+      <div class="tile"><i class="fa-brands fa-js"></i><span>JavaScript</span></div>
+      <div class="tile"><i class="fa-brands fa-python"></i><span>Python</span></div>
+      <div class="tile"><i class="fa-solid fa-code"></i><span>Kotlin</span></div>
+    </div>
+  </div>
+
+  <div class="skill-row reveal">
+    <div class="skill-intro">
+      <h3>Databases</h3>
+      <p>How I store, organize, and retrieve data.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile"><i class="fa-solid fa-database"></i><span>MySQL</span></div>
+      <div class="tile"><i class="fa-solid fa-table"></i><span>SQL</span></div>
+      <div class="tile"><i class="fa-solid fa-hard-drive"></i><span>SQLite</span></div>
+    </div>
+  </div>
+
+  <div class="skill-row reveal">
+    <div class="skill-intro">
+      <h3>Tools</h3>
+      <p>The tools that help me work faster and stay organized.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile"><i class="fa-brands fa-github"></i><span>GitHub</span></div>
+      <div class="tile"><i class="fa-solid fa-terminal"></i><span>VS Code</span></div>
+      <div class="tile"><i class="fa-solid fa-robot"></i><span>Claude</span></div>
+      <div class="tile"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Gemini</span></div>
+      <div class="tile"><i class="fa-brands fa-android"></i><span>Android Studio</span></div>
+    </div>
+  </div>
+
+  <div class="skill-row reveal">
+    <div class="skill-intro">
+      <h3>Other skills</h3>
+      <p>Support skills that round out my IT knowledge.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile"><i class="fa-solid fa-screwdriver-wrench"></i><span>Troubleshooting</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. PROJECTS (each card opens its own page) -->
+<section id="projects">
+  <header class="sec-head center reveal">
+    <p class="label">Portfolio</p>
+    <h2>Selected Works</h2>
+  </header>
+
+  <div class="cards three">
+    <article class="project reveal">
+      <div class="thumb"><img src="POS-logo.png"></div>
+      <div class="project-body">
+        <div class="meta">Project 1 &middot; Web / Application</div>
+        <h3>Poultry Feed Stock Tracking with POS Application</h3>
+        <p>Automates inventory management and sales transactions, and improves the accuracy of stock records in poultry feed businesses.</p>
+        <a class="btn outline full" href="project1.html">View details</a>
+      </div>
+    </article>
+    <article class="project reveal">
+      <div class="thumb"><img src="image.png"></div>
+      <div class="project-body">
+        <div class="meta">Project 2 &middot; Data / Database</div>
+        <h3>IT Help Desk Ticket Analysis</h3>
+        <p>Analyses IT help desk tickets to identify common issues, trends, and areas for improvement in the support process.</p>
+        <a class="btn outline full" href="project2.html">View details</a>
+      </div>
+    </article>
+    <article class="project reveal">
+      <div class="thumb"><img src="ExpenseFlow-logo.jpg"></div>
+      <div class="project-body">
+        <div class="meta">Project 3 &middot; Mobile App</div>
+        <h3>ExpenseFlow (Expense Tracker)</h3>
+        <p>An Android app that helps students and employees record daily spending, get AI-assisted insights, and manage their budgets.</p>
+        <a class="btn outline full" href="project3.html">View details</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- 4. PROBLEM-SOLVING (troubleshooting timeline) -->
+<section id="problem-solving">
+  <header class="sec-head center reveal">
+    <p class="label">Troubleshooting</p>
+    <h2>Problem-Solving</h2>
+  </header>
+
+  <ol class="timeline">
+    <li class="reveal">
+      <article class="tl-card">
+        <p class="meta">Case 1 &middot; POS App</p>
+        <h3>LazyVerticalGrid key crash</h3>
+        <p><strong>Problem:</strong> the app crashed when the product grid rendered or updated.</p>
+        <p><strong>Possible causes:</strong> duplicate or unstable item keys.</p>
+        <p><strong>Diagnostics:</strong> read the stack trace for the duplicate-key error and check which field was used as the key.</p>
+        <p><strong>Solution:</strong> use a unique, stable ID per item as the key.</p>
+        <ul class="tags"><li>Lesson: never key on a name or index that can repeat or shift</li></ul>
+      </article>
+    </li>
+    <li class="reveal">
+      <article class="tl-card">
+        <p class="meta">Case 2 &middot; POS App</p>
+        <h3>derivedStateOf anti-pattern</h3>
+        <p><strong>Problem:</strong> excess recompositions or stale values in the UI.</p>
+        <p><strong>Possible causes:</strong> <code>derivedStateOf</code> wrapped around non-state or cheap calculations.</p>
+        <p><strong>Diagnostics:</strong> check what state the block reads and whether it actually changes between recompositions.</p>
+        <p><strong>Solution:</strong> use <code>remember</code> with keys or plain state instead.</p>
+        <ul class="tags"><li>Lesson: derivedStateOf is for cutting recompositions, not a general wrapper</li></ul>
+      </article>
+    </li>
+    <li class="reveal">
+      <article class="tl-card">
+        <p class="meta">Case 3 &middot; POS App</p>
+        <h3>Compose BOM hover bug</h3>
+        <p><strong>Problem:</strong> a crash tied to hover handling.</p>
+        <p><strong>Possible causes:</strong> a bug in the Compose version the BOM pulled in.</p>
+        <p><strong>Diagnostics:</strong> match the stack trace to the Compose version in use.</p>
+        <p><strong>Solution:</strong> change the BOM version.</p>
+        <ul class="tags"><li>Lesson: a crash after a dependency update may be a library bug, so check versions first</li></ul>
+      </article>
+    </li>
+    <li class="reveal">
+      <article class="tl-card">
+        <p class="meta">Case 4 &middot; Expense Tracker</p>
+        <h3>Landscape mode issues</h3>
+        <p><strong>Problem:</strong> the layout broke or state was lost on rotation.</p>
+        <p><strong>Possible causes:</strong> fixed-size layouts, or state not surviving the configuration change.</p>
+        <p><strong>Diagnostics:</strong> rotate the device and watch for overflow, clipped content, or reset inputs.</p>
+        <p><strong>Solution:</strong> make the layout adaptive and keep state in <code>rememberSaveable</code> or a ViewModel.</p>
+        <ul class="tags"><li>Lesson: test rotation early, because the activity is recreated on rotate</li></ul>
+      </article>
+    </li>
+    <li class="reveal">
+      <article class="tl-card">
+        <p class="meta">Case 5 &middot; POS App</p>
+        <h3>CSV export failing via FileProvider</h3>
+        <p><strong>Problem:</strong> exporting the CSV crashed the app or the share/open action failed.</p>
+        <p><strong>Possible causes:</strong><br>&bull; Sharing a raw <code>file://</code> URI instead of a <code>content://</code> URI (<code>FileUriExposedException</code>).<br>&bull; A missing or wrong <code>&lt;provider&gt;</code> entry in <code>AndroidManifest.xml</code>.<br>&bull; A <code>file_paths.xml</code> that doesn't cover the folder where the file was saved.<br>&bull; Missing <code>FLAG_GRANT_READ_URI_PERMISSION</code> on the intent.</p>
+        <p><strong>Diagnostics:</strong><br>&bull; Read the logcat exception.<br>&bull; Check that the authority string matches in the manifest and in the <code>FileProvider.getUriForFile()</code> call.<br>&bull; Confirm the file exists at the expected path before sharing.</p>
+        <p><strong>Solution:</strong> declare the FileProvider in the manifest, add a <code>file_paths.xml</code> that includes the export directory, build the URI with <code>FileProvider.getUriForFile()</code>, and add the read-permission flag to the intent.</p>
+        <ul class="tags"><li>Lesson: since Android 7, apps can't share file:// URIs, so always share through FileProvider and make sure the authority and paths match exactly</li></ul>
+      </article>
+    </li>
+    <li class="reveal">
+      <article class="tl-card">
+        <p class="meta">Case 6 &middot; Cyber Security</p>
+        <h3>SQL Injection Vulnerability</h3>
+        <p><strong>What is it?</strong> SQL injection happens when an application puts user input directly into a database query. The database can then treat that input as SQL commands instead of plain data. It's a flaw in how the code is written, not in the database itself.</p>
+        <p><strong>How can it happen?</strong><br>&bull; The code builds queries by joining strings, for example <code>"SELECT * FROM users WHERE name = '" + input + "'"</code>.<br>&bull; Input from login forms, search boxes, URLs, or API fields isn't validated or sanitized.<br>&bull; The database account the app uses has more privileges than it needs.<br>&bull; Detailed database error messages are shown to users, which gives away the table structure.</p>
+        <p><strong>What are the risks?</strong><br>&bull; <em>Confidentiality:</em> user records, passwords, and financial data can be exposed.<br>&bull; <em>Integrity:</em> data can be changed or deleted.<br>&bull; <em>Authentication bypass:</em> login checks can be skipped.<br>&bull; <em>Availability:</em> the data or the service can be destroyed or disrupted.<br>&bull; <em>Consequences:</em> loss of user trust, legal and compliance trouble (including data privacy law), and recovery costs.</p>
+        <p><strong>How can developers prevent it?</strong><br>&bull; Use parameterized queries or prepared statements, so input is always treated as data.<br>&bull; Use an ORM or a safe query API, such as Room's <code>@Query</code> with <code>:param</code> placeholders on Android.<br>&bull; Validate input type, length, and format, using allow-lists where possible.<br>&bull; Never build queries by concatenating strings.</p>
+        <p><strong>Safe pattern (Kotlin/Room):</strong><br><code>@Query("SELECT * FROM users WHERE name = :name")</code><br><code>fun findByName(name: String): User?</code></p>
+        <p><strong>What security practices should be implemented?</strong><br>&bull; Least privilege: the app's database account should have only the permissions it needs.<br>&bull; Show generic error messages to users and log details privately.<br>&bull; Hash passwords with bcrypt so stolen data is less useful.<br>&bull; Keep frameworks and libraries updated.<br>&bull; Test with code reviews, static analysis, and authorized security testing.<br>&bull; Use a web application firewall (WAF) as an extra layer, not a replacement for safe code.<br>&bull; Back up data regularly and monitor logs for unusual queries.</p>
+        <ul class="tags"><li>Conclusion: SQL injection is preventable. Treat all user input as untrusted and always use parameterized queries</li></ul>
+      </article>
+    </li>
+  </ol>
+</section>
+
+
+<!-- 5. EMPLOYABILITY -->
+<section id="employability">
+  <header class="sec-head center reveal">
+    <p class="label">Ready for work</p>
+    <h2>Employability</h2>
+  </header>
+
+  <div class="cards four">
+    <article class="info-card reveal emp-card" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open Communication details"><span class="chip-icon"><i class="fa-solid fa-comments"></i></span><h3>Communication</h3><p>I explain technical ideas in plain, organized language.</p><span class="btn outline full emp-btn">View details <i class="fa-solid fa-arrow-right"></i></span><div class="emp-full" hidden>I explain technical ideas in plain, organized language.<br>
+&bull; Wrote step-by-step problem, cause, diagnosis and solution notes for six real cases in the Problem-Solving section.<br>
+&bull; Documented each project with its purpose, features and results on its own page.<br>
+&bull; Recorded a mock interview to practice answering questions clearly and confidently.</div></article>
+    <article class="info-card reveal emp-card" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open Teamwork details"><span class="chip-icon"><i class="fa-solid fa-people-group"></i></span><h3>Teamwork</h3><p>I work well with others and take responsibility for my part.</p><span class="btn outline full emp-btn">View details <i class="fa-solid fa-arrow-right"></i></span><div class="emp-full" hidden>I work well with others and take responsibility for my part.<br>
+&bull; Serve as a Production Team Member at Datamex College of Saint Adeline (2023 &ndash; Present).<br>
+&bull; Use GitHub and version control to keep project work organized and shareable.<br>
+&bull; Welcome feedback and review my work, including AI-assisted work, before I rely on it.</div></article>
+    <article class="info-card reveal emp-card" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open Time management details"><span class="chip-icon"><i class="fa-solid fa-clock"></i></span><h3>Time management</h3><p>I balance school, work and projects by planning ahead.</p><span class="btn outline full emp-btn">View details <i class="fa-solid fa-arrow-right"></i></span><div class="emp-full" hidden>I balance school, work and projects by planning ahead.<br>
+&bull; Completed three projects (POS app, IT help desk analysis, ExpenseFlow) while studying full time as a fourth-year BSIT student.<br>
+&bull; Finished five training seminars in August 2026, including Web Dev, Cyber Awareness, Arduino, Linux and Cloud Computing.<br>
+&bull; Test early, such as checking screen rotation in ExpenseFlow, to avoid last-minute fixes.</div></article>
+    <article class="info-card reveal video-card" id="interviewCard" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Play mock interview video">
+      <span class="chip-icon"><i class="fa-solid fa-video"></i></span>
+      <h3>Mock Interview</h3>
+      <p>Watch my recorded interview to see how I communicate and answer questions.</p>
+      <span class="btn outline full play-btn"><i class="fa-solid fa-play"></i> Play video</span>
+    </article>
+  </div>
+</section>
+
+<!-- 6. RESUME -->
+<section id="resume">
+  <header class="sec-head center reveal">
+    <p class="label">Background</p>
+    <h2>Resume</h2>
+  </header>
+
+  <div class="cards three">
+    <article class="info-card reveal">
+      <span class="chip-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+      <h3>Education</h3>
+      <p><strong>Bachelor of Science in Information Technology</strong><br>2023 – Present</p>
+    </article>
+    <article class="info-card reveal">
+      <span class="chip-icon"><i class="fa-solid fa-briefcase"></i></span>
+      <h3>Experience</h3>
+      <p><strong>Production Team Member</strong><br>Datamex College of saint adeline, 2023 – Present</p>
+    </article>
+    <article class="info-card reveal">
+      <span class="chip-icon"><i class="fa-solid fa-star"></i></span>
+      <h3>Highlights</h3>
+      <p>I have an very interesting skill set like programming and web development.</p>
+      <a class="btn dark" href="edsel_resume.pdf" download>Download resume <i class="fa-solid fa-download"></i></a>
+    </article>
+  </div>
+</section>
+
+<!-- 7. CERTIFICATES / ACHIEVEMENTS -->
+<section id="certificates">
+  <header class="sec-head center reveal">
+    <p class="label">Recognition</p>
+    <h2>Certificates &amp; Achievements</h2>
+  </header>
+
+  <ul class="cert-list">
+    <li class="reveal">
+      <a class="cert-link" href="CERT1.pdf" data-alt="Certificate of Participation: Web Dev 101: System Integration | Connecting Apps via API">
+        <span class="chip-icon"><i class="fa-solid fa-certificate"></i></span>
+        <div><strong>Web Dev 101: System Integration | Connecting Apps via API</strong><span>UpskillTechPH Training Services, August 8, 2026</span></div>
+        <i class="fa-solid fa-expand cert-open" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="reveal">
+      <a class="cert-link" href="CERT2.pdf" data-alt="Certificate of Participation: Cyber Awareness, Cyber Threats in 2026 and How to Stay Safe">
+        <span class="chip-icon"><i class="fa-solid fa-certificate"></i></span>
+        <div><strong>Cyber Awareness: Cyber Threats in 2026 and How to Stay Safe</strong><span>UpskillTechPH Training Services, August 8, 2026</span></div>
+        <i class="fa-solid fa-expand cert-open" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="reveal">
+      <a class="cert-link" href="CERT3.pdf" data-alt="Certificate of Participation:Arduino 101: Coding Meets Hardware">
+        <span class="chip-icon"><i class="fa-solid fa-certificate"></i></span>
+        <div><strong>Arduino 101: Coding Meets Hardware</strong><span>UpskillTechPH Training Services, August 5, 2026</span></div>
+        <i class="fa-solid fa-expand cert-open" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="reveal">
+      <a class="cert-link" href="CERT4.jpg" data-alt="Certificate of Participation:Linux & System Administration: Master of the Command Line">
+        <span class="chip-icon"><i class="fa-solid fa-certificate"></i></span>
+        <div><strong>Linux & System Administration: Master of the Command Line</strong><span>Ethel Programming Computer Programming Services, August 7, 2026</span></div>
+        <i class="fa-solid fa-expand cert-open" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="reveal">
+      <a class="cert-link" href="CERT5.jpg" data-alt="Certificate of Participation: IT Infrastructure and Cloud Computing: Building the Digital Future">
+        <span class="chip-icon"><i class="fa-solid fa-certificate"></i></span>
+        <div><strong>IT Infrastructure and Cloud Computing: Building the Digital Future</strong><span>Ethel Programming Computer Programming Services, August 8, 2026</span></div>
+        <i class="fa-solid fa-expand cert-open" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</section>
+
+<!-- AI LITERACY EVIDENCE (after Certificates) -->
+<section id="ai-literacy">
+  <header class="sec-head center reveal">
+    <p class="label">Transparency</p>
+    <h2>AI Literacy Evidence</h2>
+  </header>
+
+  <ul class="cert-list">
+    <li class="reveal">
+      <a class="preview-link" href="#ai-literacy" data-title="My AI Literacy Evidence">
+        <span class="chip-icon"><i class="fa-solid fa-file-lines"></i></span>
+        <div><strong>My AI Literacy Evidence document</strong><span>AI usage log, verification notes, and reflection</span></div>
+        <i class="fa-solid fa-expand cert-open" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</section>
+
+<!-- 8. GITHUB -->
+<section id="github">
+  <div class="github-card reveal">
+    <span class="chip-icon big"><i class="fa-brands fa-github"></i></span>
+    <h2>GitHub</h2>
+    <p>Browse my code, repositories, and contributions.</p>
+    <a class="btn dark" href="https://github.com/edselvillanueva980" target="_blank" rel="noopener">Visit my GitHub <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+  </div>
+</section>
+
+<!-- 9. CONTACT -->
+<section id="contact">
+  <header class="sec-head center reveal">
+    <p class="label">Get in touch</p>
+    <h2>Contact</h2>
+  </header>
+
+  <div class="contact-grid">
+    <ul class="contact-list reveal">
+      <li><span class="chip-icon"><i class="fa-solid fa-envelope"></i></span> edselvillanueva0x@example.com</li>
+      <li><span class="chip-icon"><i class="fa-solid fa-phone"></i></span> +63 975 333 6560</li>
+      <li><span class="chip-icon"><i class="fa-brands fa-linkedin-in"></i></span> <a href="https://www.linkedin.com/in/edsel-villanueva-479805441/?isSelfProfile=false" target="_blank" rel="noopener">LinkedIn Profile</a></li>
+      <li><span class="chip-icon"><i class="fa-solid fa-location-dot"></i></span> Philippines</li>
+    </ul>
+
+    <form class="form-card reveal" action="#" method="post">
+      <h3>Send an email directly.</h3>
+      <label for="name">Name</label>
+      <input id="name" type="text" placeholder="Your name">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="you@example.com">
+      <label for="message">Message</label>
+      <textarea id="message" rows="5" placeholder="Your message here..."></textarea>
+      <button class="btn dark full" type="submit">Send message</button>
+    </form>
+  </div>
+</section>
+
+<!-- 10. REFLECTION -->
+<section id="reflection">
+  <header class="sec-head center reveal">
+    <p class="label">Looking back</p>
+    <h2>Reflection</h2>
+  </header>
+  <blockquote class="quote reveal">
+Before entering the BSIT program, my understanding of Information Technology was largely surface-level and consumer-focused. I viewed computers and software primarily as finished tools for gaming, browsing, and basic utilities. I understood little about the underlying architecture, logic structures, database design, or the engineering discipline required to build scalable software systems from scratch. <br><br>
+
+The most critical takeaway from my academic and practical journey has been the shift from writing isolated blocks of code to designing cohesive, user-centric system architectures. I mastered core software engineering principles, relational database management, clean code practices, and the importance of systematic debugging and documentation. I learned that technology is ultimately a problem-solving medium meant to bridge operational friction with efficient automated workflows. <br><br>
+
+My growth was cemented through three key pillars: the *POS (Point of Sale) system, ExpenseFlow, and complex *Data Analysis* case studies.
+ The POS Projecttaught me real-time transaction handling, state management, and inventory-database synchronization under strict reliability constraints.
+ ExpenseFlow sharpened my ability to design intuitive financial tracking logic, streamline user input validation, and structure clean data pipelines for transaction logs.
+ The Data Analysis Cases* pushed me to move beyond raw code into deriving actionable business insights, cleaning unstructured datasets, and utilizing analytical frameworks to drive informed decision-making. Together, these projects bridged the gap between theoretical programming and production-ready application development. <br><br>
+
+The most demanding technical challenge was managing asynchronous data synchronization and state consistency across complex modules—particularly within the POS and ExpenseFlow environments. Handling edge cases during concurrent database updates, resolving race conditions, and ensuring seamless UI responsiveness while processing transaction data required rigorous algorithmic thinking and extensive architectural refactoring. <br><br>
+
+My skill set has evolved from basic syntax comprehension to full-stack execution and strategic system design, heavily accelerated by modern *AI-assisted development workflows*. By leveraging AI tools as collaborative coding and architectural partners—utilizing structured prompt formulas and iterative debugging—I learned to rapidly prototype, stress-test logic, and optimize codebases with unprecedented efficiency. I have moved from writing fragile scripts to building modular, maintainable applications while sharpening my capacity to evaluate and refine machine-generated solutions. <br><br>
+
+While my foundation in application development and data processing is robust, I am actively looking to deepen my expertise in cloud-native deployment pipelines, microservices architecture, and advanced automated testing frameworks. Staying ahead in modern software development requires continuous adaptation to scalable deployment and enterprise-grade security practices. <br><br>
+
+I aim to become a versatile *Software Engineer / Systems Developer* who specializes in building high-performance applications, data-driven solutions, and AI-augmented workflows. I want to work at the intersection of robust backend logic, intuitive frontend user experience, and smart automation, creating software that solves real-world operational bottlenecks with surgical precision. <br><br>
+
+I am ready because I possess a proven track record of moving projects from concept to deployment—exemplified by my work on the POS system, ExpenseFlow, and data analysis cases. I combine practical coding competence and AI-assisted workflow mastery with disciplined problem-solving, an adaptability to tackle complex technical debt, and a relentless drive to deliver functional, high-impact results.
+  </blockquote>
+</section>
+
+</main>
+
+<footer>
+  <p>&copy; 2026  Edsel Villanueva. All rights reserved.</p>
+</footer>
+
+<!-- CERTIFICATE PREVIEW -->
+<div class="cert-modal" id="certModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Certificate preview">
+  <button class="cert-close" id="certClose" type="button" aria-label="Close preview"><i class="fa-solid fa-xmark"></i></button>
+  <div class="cert-stage">
+    <img id="certImg" src="" alt="" hidden>
+    <iframe id="certPdf" title="Certificate PDF" src="about:blank" hidden></iframe>
+    <a class="btn dark cert-fallback" id="certOpen" href="#" target="_blank" rel="noopener" hidden>Open in new tab <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+  </div>
+</div>
+<script>
+/* certificate popup: images show in <img>, PDFs show in <iframe> */
+(function () {
+  var modal = document.getElementById("certModal");
+  var img = document.getElementById("certImg");
+  var pdf = document.getElementById("certPdf");
+  var openLink = document.getElementById("certOpen");
+  var closeBtn = document.getElementById("certClose");
+  var lastFocus = null;
+  function openCert(a) {
+    var href = a.getAttribute("href");
+    var isPdf = /\.pdf($|[?#])/i.test(href);
+    lastFocus = a;
+    img.hidden = isPdf; pdf.hidden = !isPdf;
+    openLink.hidden = !isPdf; openLink.href = href;
+    if (isPdf) { img.removeAttribute("src"); pdf.src = href + "#toolbar=0&navpanes=0&view=FitH"; }
+    else { pdf.src = "about:blank"; img.src = href; img.alt = a.getAttribute("data-alt") || "Certificate"; }
+    modal.classList.add("open"); modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    closeBtn.focus();
+  }
+  function closeCert() {
+    modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    pdf.src = "about:blank"; img.removeAttribute("src");
+    if (lastFocus) lastFocus.focus();
+  }
+  document.querySelectorAll(".cert-link").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); openCert(a); });
+  });
+  closeBtn.addEventListener("click", closeCert);
+  modal.addEventListener("click", function (e) { if (e.target === modal || e.target.classList.contains("cert-stage")) closeCert(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("open")) closeCert(); });
+})();
+</script>
+
+<!-- AI LITERACY EVIDENCE PREVIEW -->
+<div class="cert-modal preview-modal" id="aiModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="My AI Literacy Evidence">
+  <button class="cert-close" id="aiClose" aria-label="Close preview"><i class="fa-solid fa-xmark"></i></button>
+  <div class="doc-preview" id="aiDocBody"></div>
+</div>
+
+<!-- AI LITERACY EVIDENCE CONTENT (rendered into the popup above) -->
+<template id="aiDocTemplate">
+  <h1>My AI Literacy Evidence</h1>
+  <p class="lead">This document shows how I used AI tools during my projects. It records what the AI helped with, what I checked myself, and where the AI was wrong. The goal is responsible use, not dependence on AI.</p>
+  <p class="label">AI Usage Log</p>
+  <div class="log-list">
+    <details class="log-entry">
+      <summary>
+        <span class="chip-icon"><i class="fa-solid fa-palette"></i></span>
+        <div><strong>Portfolio layout and styling</strong><span>[October 2026] &middot; Portfolio build</span></div>
+        <i class="fa-solid fa-chevron-down log-open" aria-hidden="true"></i>
+      </summary>
+      <dl class="log-body">
+        <div><dt>Task</dt><dd>Build the portfolio's section structure, theme system, and responsive floating nav.</dd></div>
+        <div><dt>AI assistance</dt><dd>Suggested the section structure, the CSS variable theme system, and the nav layout. Explained how to make the cards responsive.</dd></div>
+        <div><dt>My verification</dt><dd>Opened the page in the browser, checked light and dark mode, and resized the window to confirm the mobile breakpoints. I set the color values myself to match my design.</dd></div>
+      </dl>
+    </details>
+    <details class="log-entry">
+      <summary>
+        <span class="chip-icon"><i class="fa-solid fa-expand"></i></span>
+        <div><strong>Certificate preview popup</strong><span>[October 2026] &middot; cert.js and cert.css</span></div>
+        <i class="fa-solid fa-chevron-down log-open" aria-hidden="true"></i>
+      </summary>
+      <dl class="log-body">
+        <div><dt>Task</dt><dd>Make each certificate open at full size in a popup.</dd></div>
+        <div><dt>AI assistance</dt><dd>Drafted the modal script: open and close behavior, Escape-key closing, focus return, and a no-JavaScript fallback where the link opens the image directly.</dd></div>
+        <div><dt>My verification</dt><dd>Clicked each certificate, closed the popup with the button, backdrop, and Escape key, tabbed through it with the keyboard, and checked the fallback with JavaScript turned off.</dd></div>
+      </dl>
+    </details>
+    <details class="log-entry">
+      <summary>
+        <span class="chip-icon"><i class="fa-solid fa-chart-column"></i></span>
+        <div><strong>IT Help Desk ticket analysis</strong><span>[October 2026] &middot; Project 2</span></div>
+        <i class="fa-solid fa-chevron-down log-open" aria-hidden="true"></i>
+      </summary>
+      <dl class="log-body">
+        <div><dt>Task</dt><dd>Check the logic of the Excel summary formulas and structure the summary tables.</dd></div>
+        <div><dt>AI assistance</dt><dd>Explained how COUNTIFS and AVERAGEIFS work and suggested a layout for the summary tables.</dd></div>
+        <div><dt>My verification</dt><dd>Recalculated the figures in the Summary and Analysis sheets by hand and against a filtered view of Raw_Data. Confirmed the 58% first-contact rate (29 of 50) before publishing.</dd></div>
+      </dl>
+    </details>
+    <details class="log-entry">
+      <summary>
+        <span class="chip-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+        <div><strong>Android troubleshooting write-ups</strong><span>[August 2026] &middot; Problem-Solving section</span></div>
+        <i class="fa-solid fa-chevron-down log-open" aria-hidden="true"></i>
+      </summary>
+      <dl class="log-body">
+        <div><dt>Task</dt><dd>Document the debugging cases I faced in my Android projects.</dd></div>
+        <div><dt>AI assistance</dt><dd>Explained FileProvider setup, the Room parameterized query pattern, and when derivedStateOf is appropriate. Helped organize the write-ups.</dd></div>
+        <div><dt>My verification</dt><dd>Checked each explanation against the official Android developer documentation, then reproduced the FileProvider and key-crash fixes in my own project before writing them up.</dd></div>
+      </dl>
+    </details>
+  </div>
+  <p class="label">Reflection</p>
+  <div class="log-qa">
+    <article class="info-card">
+      <span class="chip-icon"><i class="fa-solid fa-bullseye"></i></span>
+      <h3>What did AI help me accomplish?</h3>
+      <p>It sped up the portfolio build, helped me debug CSS and JavaScript, drafted project wording, and explained Android concepts I was learning. It also helped me check formula logic in the ticket analysis.</p>
+    </article>
+    <article class="info-card">
+      <span class="chip-icon"><i class="fa-solid fa-circle-check"></i></span>
+      <h3>What did I personally verify?</h3>
+      <p>I tested every page in both themes and at mobile width, recalculated the Excel figures myself, checked Android code against the official docs, and ran the fixes in my own project before I trusted them.</p>
+    </article>
+    <article class="info-card">
+      <span class="chip-icon"><i class="fa-solid fa-lightbulb"></i></span>
+      <h3>What did I learn from using AI?</h3>
+      <p>I learned to ask for the reasoning behind a suggestion, not just the code. Explanations of concepts like FileProvider and parameterized queries stuck better once I tested them myself.</p>
+    </article>
+    <article class="info-card">
+      <span class="chip-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+      <h3>What limitations or errors did I find?</h3>
+      <p>AI answers sometimes mixed in outdated Android APIs, suggested class names that did not match my stylesheet, and stated things confidently without a source. I treat every AI answer as a draft until I have checked it.</p>
+    </article>
+  </div>
+</template>
+<script>
+/* open the AI Literacy Evidence document in a popup (no separate file needed) */
+(function () {
+  var modal = document.getElementById("aiModal");
+  var body = document.getElementById("aiDocBody");
+  var tpl = document.getElementById("aiDocTemplate");
+  var closeBtn = document.getElementById("aiClose");
+  var lastFocus = null;
+  function openPreview(trigger) {
+    body.innerHTML = "";
+    body.appendChild(tpl.content.cloneNode(true));
+    lastFocus = trigger;
+    modal.classList.add("open"); modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    closeBtn.focus();
+  }
+  function closePreview() {
+    modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    body.innerHTML = "";
+    if (lastFocus) lastFocus.focus();
+  }
+  document.querySelectorAll(".preview-link").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); openPreview(a); });
+  });
+  closeBtn.addEventListener("click", closePreview);
+  modal.addEventListener("click", function (e) { if (e.target === modal) closePreview(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("open")) closePreview(); });
+})();
+</script>
+
+<!-- EMPLOYABILITY POPUP -->
+<div class="cert-modal preview-modal" id="empModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Employability details">
+  <button class="cert-close" id="empClose" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+  <div class="doc-preview emp-preview" id="empBody"></div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById("empModal");
+  var body = document.getElementById("empBody");
+  var closeBtn = document.getElementById("empClose");
+  var lastFocus = null;
+  function openEmp(card) {
+    body.innerHTML = '<p class="label">Employability</p><h1></h1><p></p>';
+    body.querySelector("h1").textContent = card.querySelector("h3").textContent;
+    body.querySelectorAll("p")[1].innerHTML = card.querySelector(".emp-full").innerHTML;
+    lastFocus = card;
+    modal.classList.add("open"); modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    closeBtn.focus();
+  }
+  function closeEmp() {
+    modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    body.innerHTML = "";
+    if (lastFocus) lastFocus.focus();
+  }
+  document.querySelectorAll(".emp-card").forEach(function (c) {
+    c.addEventListener("click", function () { openEmp(c); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEmp(c); } });
+  });
+  closeBtn.addEventListener("click", closeEmp);
+  modal.addEventListener("click", function (e) { if (e.target === modal) closeEmp(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("open")) closeEmp(); });
+})();
+</script>
+
+<!-- MOCK INTERVIEW VIDEO POPUP -->
+<div class="cert-modal video-modal" id="videoModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Mock interview video">
+  <button class="cert-close" id="videoClose" type="button" aria-label="Close video"><i class="fa-solid fa-xmark"></i></button>
+  <div class="video-box">
+    <video id="videoPlayer" controls playsinline preload="none" controlslist="nodownload">
+      <source src="edsel_interview.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
+<script>
+/* open the mock interview video in a popup; stop playback on close */
+(function () {
+  var card = document.getElementById("interviewCard");
+  var modal = document.getElementById("videoModal");
+  var player = document.getElementById("videoPlayer");
+  var closeBtn = document.getElementById("videoClose");
+  if (!card || !modal || !player) return;
+  function openVideo() {
+    modal.classList.add("open"); modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    closeBtn.focus();
+    var p = player.play(); if (p && p.catch) p.catch(function () {});
+  }
+  function closeVideo() {
+    player.pause(); player.currentTime = 0;
+    modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    card.focus();
+  }
+  card.addEventListener("click", openVideo);
+  card.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openVideo(); } });
+  closeBtn.addEventListener("click", closeVideo);
+  modal.addEventListener("click", function (e) { if (e.target === modal) closeVideo(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("open")) closeVideo(); });
+})();
+</script>
+
+<!-- ABOUT ME PREVIEW -->
+<div class="cert-modal preview-modal about-modal" id="aboutModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="About Me">
+  <button class="cert-close" id="aboutClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+  <div class="doc-preview about-preview" id="aboutBody"></div>
+</div>
+<template id="aboutTemplate">
+  <p class="label">Profile</p>
+  <h1>About Me</h1>
+    <p>I am a fourth-year Bachelor of Science in Information Technology (BSIT) student who specializes in mobile and web development. My studies taught me how software is planned, built, and tested, and I have applied that learning in projects such as a poultry feed stock tracking POS app, an IT help desk ticket analysis in Excel, and an Android expense tracker called ExpenseFlow.</p>
+    <p>My technical strengths are in Kotlin and Android development, supported by web fundamentals in HTML, CSS, and JavaScript. I also work with Python and databases such as MySQL and SQLite. I have debugged real problems, from Compose crashes to preventing SQL injection, and I use GitHub, VS Code, and Android Studio regularly.</p>
+    <p>My career goal is to become a mobile app developer and web developer who can also plan and manage IT projects, teams, schedules, and budgets. Over time, I want to lead small technical teams that build useful, well-organized software.</p>
+    <p>The professional values that guide me are curiosity, accountability, and clear communication. I believe good software should be easy to use, and I check my work carefully, including anything I produce with AI tools, before I trust it.</p>
+    <p>The IT work that interests me most is building mobile applications that solve everyday problems for businesses and individuals, especially tools that keep records accurate and make processes more efficient. I am also interested in data analysis and IT support, because they show how systems behave in real use.</p>
+</template>
+<script>
+/* open the About Me text in a popup */
+(function () {
+  var modal = document.getElementById("aboutModal");
+  var body = document.getElementById("aboutBody");
+  var tpl = document.getElementById("aboutTemplate");
+  var closeBtn = document.getElementById("aboutClose");
+  var lastFocus = null;
+  function openAbout(trigger) {
+    body.innerHTML = "";
+    body.appendChild(tpl.content.cloneNode(true));
+    lastFocus = trigger;
+    modal.classList.add("open"); modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    closeBtn.focus();
+  }
+  function closeAbout() {
+    modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    body.innerHTML = "";
+    if (lastFocus) lastFocus.focus();
+  }
+  document.querySelectorAll(".about-link").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); openAbout(a); });
+  });
+  closeBtn.addEventListener("click", closeAbout);
+  modal.addEventListener("click", function (e) { if (e.target === modal) closeAbout(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("open")) closeAbout(); });
+})();
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IT Help Desk Ticket Analysis | Edsel Villanueva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ---------- PROJECT DETAIL PAGES (extends style.css) ---------- */
+.page section { padding: 48px 24px; }
+.page main { padding-top: 120px; }
+.back-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 28px; font-size: 0.8rem; font-weight: 600; color: var(--muted); transition: color 0.25s; }
+.back-link:hover { color: var(--ink); }
+.back-link i { font-size: 0.7rem; }
+
+.proj-hero { padding-bottom: 24px; }
+.proj-hero h1 { font-size: clamp(2.2rem, 5.5vw, 3.6rem); margin-top: 8px; }
+.proj-hero .lead { max-width: 60ch; }
+.proj-hero .buttons { margin-top: 28px; }
+.proj-meta { margin-top: 40px; padding: 26px 28px; background: var(--card); border: 1px solid var(--line); border-radius: 20px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+
+.hero-shot { aspect-ratio: 16 / 8; border-radius: 24px; box-shadow: var(--shadow); }
+.hero-shot i { font-size: 4rem; }
+.shot-caption { margin-top: 10px; text-align: center; font-size: 0.75rem; color: var(--muted); }
+
+.block h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 16px; padding-left: 14px; border-left: 3px solid var(--ink); }
+.block > p { max-width: 70ch; }
+.block .label { margin-bottom: 4px; }
+.block-list { display: grid; gap: 10px; max-width: 70ch; }
+.block-list li { position: relative; padding-left: 22px; }
+.block-list li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 8px; height: 8px; border-radius: 2px; background: var(--ink); }
+.block .tags { margin-top: 0; }
+.two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+
+.diagram {
+  display: grid; place-items: center; gap: 8px; min-height: 220px; padding: 24px; text-align: center;
+  border: 1.5px dashed var(--line); border-radius: 20px; background: var(--card);
+  color: var(--muted); font-size: 0.85rem;
+}
+.diagram i { font-size: 2rem; }
+.diagram strong { display: block; font-size: 0.95rem; }
+
+.shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+.shots figure { background: var(--card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+.shots .thumb { border-radius: 0; }
+.shots figcaption { padding: 14px 18px; font-size: 0.8rem; font-weight: 500; }
+
+.code-box {
+  max-width: 70ch; padding: 20px 22px; border-radius: 16px; overflow-x: auto;
+  background: var(--tag); border: 1px solid var(--line);
+  font: 0.8rem/1.8 "SFMono-Regular", Consolas, "Courier New", monospace; color: var(--ink);
+}
+
+.test-table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; font-size: 0.85rem; }
+.test-table th, .test-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); }
+.test-table th { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); background: var(--tag); }
+.test-table tr:last-child td { border-bottom: none; }
+.table-wrap { overflow-x: auto; }
+
+.proj-nav { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 48px; border-top: 1px solid var(--line); }
+.page .reveal.block, .page .proj-hero { will-change: auto; }
+
+@media (max-width: 860px) {
+  .page main { padding-top: 100px; }
+  .page section { padding: 36px 20px; }
+  .two-up { grid-template-columns: 1fr; }
+  .proj-nav .btn { width: 100%; }
+}
+
+.bars{display:grid;gap:10px;margin-top:6px}
+.bar-row{display:grid;grid-template-columns:90px 1fr 56px;gap:12px;align-items:center;font-size:.8rem;font-weight:600;color:var(--ink)}
+.bar-track{height:14px;border-radius:99px;background:var(--tag);overflow:hidden}
+.bar-fill{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.bar-row span:last-child{text-align:right;color:var(--text);font-weight:500}
+.chart-card{padding:24px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+.chart-card h3{margin-bottom:14px;font-size:1rem}
+.three-up{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.find{display:grid;gap:12px;max-width:80ch}
+.find li{padding:14px 18px;border:1px solid var(--line);border-radius:16px;background:var(--card);font-size:.92rem}
+@media (max-width:860px){.three-up{grid-template-columns:1fr}.bar-row{grid-template-columns:76px 1fr 48px}}
+</style>
+<script>
+  /* apply saved theme before the page paints, so there is no flash */
+  try { var t = localStorage.getItem("theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+</script>
+</head>
+<body class="page">
+
+<!-- FLOATING NAV (same as the main page) -->
+<header class="nav-wrap">
+  <div class="nav">
+    <a class="logo" href="index.html#home">PORTFOLIO.</a>
+    <nav id="menu" aria-label="Main">
+      <a href="index.html#home">Home</a><a href="index.html#profile">Profile</a><a href="index.html#skills">Skills</a><a href="index.html#projects" class="active">Projects</a><a href="index.html#problem-solving">Problem-Solving</a><a href="index.html#employability">Employability</a><a href="index.html#resume">Resume</a><a href="index.html#certificates">Certificates</a><a href="index.html#github">GitHub</a><a href="index.html#contact">Contact</a><a href="index.html#reflection">Reflection</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeBtn" aria-label="Switch light or dark mode"><i class="fa-solid fa-moon"></i></button>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section class="proj-hero">
+  <a class="back-link reveal" href="index.html#projects"><i class="fa-solid fa-arrow-left"></i> Back to all projects</a>
+  <p class="label reveal">Project 02 &middot; Data / Database Project</p>
+  <h1 class="reveal">IT Help Desk Ticket Analysis</h1>
+  <p class="lead reveal">An Excel analysis of 50 IT help desk tickets that looks at response and resolution times, ticket volume, first-contact resolution, technician performance, and customer satisfaction, then recommends improvements.</p>
+  <div class="buttons reveal">
+    <a class="btn dark" href="4A_VillanuevaEdsel.xlsx" download>Download workbook <i class="fa-solid fa-download"></i></a>
+  </div>
+  <dl class="details proj-meta reveal"><div><dt>Type</dt><dd>Data / Database</dd></div><div><dt>Role</dt><dd>Data Analyst</dd></div><div><dt>Tool</dt><dd>Microsoft Excel</dd></div><div><dt>Data source</dt><dd>IT help desk ticket dataset (50 tickets)</dd></div></dl>
+</section>
+
+<section class="block">
+  <div class="two-up">
+    <div class="reveal">
+      <h2>Project overview</h2>
+      <p>This project analyzes help desk ticket data from five departments (Finance, HR, IT, Library, Registrar). Using Excel formulas, a pivot-style summary, and charts, it measures how quickly tickets are answered and resolved and how satisfied users are.</p>
+    </div>
+    <div class="reveal">
+      <h2>Problem statement</h2>
+      <p>Help desk managers need to know which issues are most common, whether urgent tickets are handled fast enough, and how evenly work is shared among technicians, so they can improve service quality.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="two-up">
+    <div class="reveal">
+      <h2>Objectives</h2>
+      <ul class="block-list">
+        <li>Check the dataset for missing values, invalid entries, and duplicates.</li>
+        <li>Summarize response time, resolution time, and satisfaction.</li>
+        <li>Compare ticket volume and performance by issue type, priority, and technician.</li>
+        <li>Identify patterns and give recommendations.</li>
+      </ul>
+    </div>
+    <div class="reveal">
+      <h2>Target users</h2>
+      <ul class="block-list">
+        <li>Help desk managers</li>
+        <li>IT support supervisors</li>
+        <li>School or office administrators</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="reveal">
+    <h2>Tools &amp; Excel functions</h2>
+    <ul class="tags"><li>Microsoft Excel</li><li>AVERAGE / MEDIAN / MIN / MAX</li><li>COUNTIF / COUNTIFS</li><li>AVERAGEIF / AVERAGEIFS</li><li>Pivot-style summary</li><li>Charts</li></ul>
+  </div>
+</section>
+
+<section class="block">
+  <h2 class="reveal">Key features</h2>
+  <div class="cards four"><article class="info-card reveal"><span class="chip-icon"><i class="fa-solid fa-broom"></i></span><h3>Data validation</h3><p>Checked all 50 tickets: no missing values, invalid entries, or duplicates.</p></article><article class="info-card reveal"><span class="chip-icon"><i class="fa-solid fa-calculator"></i></span><h3>Live formulas</h3><p>Every figure is computed with Excel formulas, so results update if the data changes.</p></article><article class="info-card reveal"><span class="chip-icon"><i class="fa-solid fa-chart-pie"></i></span><h3>Charts</h3><p>Tickets by issue type, tickets by priority, and average resolution time.</p></article><article class="info-card reveal"><span class="chip-icon"><i class="fa-solid fa-lightbulb"></i></span><h3>Insights</h3><p>Findings and recommendations to improve help desk service.</p></article></div>
+</section>
+
+<section class="block">
+  <h2 class="reveal">Dataset</h2>
+  <div class="two-up">
+    <div class="reveal"><p>The <strong>Raw_Data</strong> sheet holds 50 tickets (TK4000&ndash;TK4049) logged over 50 days, with these variables: Ticket_ID, Day, Department, Issue_Type, Priority, Response_Minutes, Resolution_Hours, Resolved_First_Contact, Technician, and Satisfaction (1&ndash;5 scale).</p></div>
+    <div class="reveal"><p>The workbook also includes a <strong>Data_Dictionary</strong>, the <strong>Tasks</strong> list, the answers in <strong>Tasks(Answer)</strong>, an <strong>Analysis</strong> sheet, a <strong>PivotTable</strong> sheet, and a <strong>Charts</strong> sheet.</p></div>
+  </div>
+</section>
+
+<section class="block">
+  <h2 class="reveal">Key results</h2>
+  <div class="cards four">
+    <article class="info-card reveal"><h3>50</h3><p>Total tickets recorded</p></article>
+    <article class="info-card reveal"><h3>55.5 min</h3><p>Mean response time (median 46.0)</p></article>
+    <article class="info-card reveal"><h3>6.53 hrs</h3><p>Mean resolution time (median 6.15)</p></article>
+    <article class="info-card reveal"><h3>58%</h3><p>Resolved on first contact (29 of 50)</p></article>
+  </div>
+</section>
+
+<section class="block">
+  <h2 class="reveal">Charts</h2>
+  <div class="three-up">
+    <div class="chart-card reveal"><h3>Tickets by issue type</h3><div class="bars"><div class="bar-row"><span>Password</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span>12</span></div><div class="bar-row"><span>Network</span><span class="bar-track"><span class="bar-fill" style="width:91.7%"></span></span><span>11</span></div><div class="bar-row"><span>Hardware</span><span class="bar-track"><span class="bar-fill" style="width:91.7%"></span></span><span>11</span></div><div class="bar-row"><span>Account</span><span class="bar-track"><span class="bar-fill" style="width:75.0%"></span></span><span>9</span></div><div class="bar-row"><span>Software</span><span class="bar-track"><span class="bar-fill" style="width:58.3%"></span></span><span>7</span></div></div></div>
+    <div class="chart-card reveal"><h3>Tickets by priority</h3><div class="bars"><div class="bar-row"><span>Medium</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span>21</span></div><div class="bar-row"><span>High</span><span class="bar-track"><span class="bar-fill" style="width:66.7%"></span></span><span>14</span></div><div class="bar-row"><span>Low</span><span class="bar-track"><span class="bar-fill" style="width:52.4%"></span></span><span>11</span></div><div class="bar-row"><span>Critical</span><span class="bar-track"><span class="bar-fill" style="width:19.0%"></span></span><span>4</span></div></div></div>
+    <div class="chart-card reveal"><h3>Avg resolution time (hrs) by issue type</h3><div class="bars"><div class="bar-row"><span>Password</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span>7.7</span></div><div class="bar-row"><span>Software</span><span class="bar-track"><span class="bar-fill" style="width:90.9%"></span></span><span>7.0</span></div><div class="bar-row"><span>Account</span><span class="bar-track"><span class="bar-fill" style="width:85.7%"></span></span><span>6.6</span></div><div class="bar-row"><span>Hardware</span><span class="bar-track"><span class="bar-fill" style="width:76.6%"></span></span><span>5.9</span></div><div class="bar-row"><span>Network</span><span class="bar-track"><span class="bar-fill" style="width:71.4%"></span></span><span>5.5</span></div></div></div>
+  </div>
+</section>
+
+<section class="block">
+  <h2 class="reveal">Summary tables</h2>
+  <div class="two-up">
+    <div class="reveal"><h3 style="margin-bottom:12px">Average response time by priority</h3><div class="table-wrap reveal"><table class="test-table"><thead><tr><th>Priority</th><th>Avg response (min)</th></tr></thead><tbody><tr><td>High</td><td>32.4</td></tr><tr><td>Low</td><td>57.0</td></tr><tr><td>Critical</td><td>62.3</td></tr><tr><td>Medium</td><td>68.9</td></tr></tbody></table></div></div>
+    <div class="reveal"><h3 style="margin-bottom:12px">Satisfaction by priority</h3><div class="table-wrap reveal"><table class="test-table"><thead><tr><th>Priority</th><th>Avg satisfaction</th></tr></thead><tbody><tr><td>Critical</td><td>4.18</td></tr><tr><td>High</td><td>3.94</td></tr><tr><td>Low</td><td>3.70</td></tr><tr><td>Medium</td><td>3.68</td></tr></tbody></table></div></div>
+  </div>
+  <h3 class="reveal" style="margin:32px 0 12px">Technician comparison</h3>
+  <div class="table-wrap reveal"><table class="test-table"><thead><tr><th>Technician</th><th>Tickets</th><th>Avg resolution (hrs)</th><th>Avg satisfaction</th></tr></thead><tbody><tr><td>Ana</td><td>7</td><td>6.0</td><td>4.17</td></tr><tr><td>Ben</td><td>17</td><td>6.9</td><td>3.78</td></tr><tr><td>Carlo</td><td>12</td><td>5.7</td><td>3.91</td></tr><tr><td>Dina</td><td>14</td><td>7.0</td><td>3.53</td></tr></tbody></table></div>
+</section>
+
+<section class="block">
+  <h2 class="reveal">Key patterns</h2>
+  <ul class="find">
+    <li class="reveal">Critical tickets wait longer for a response (62.3 min) than High (32.4 min) and even Low (57.0 min) tickets.</li>
+    <li class="reveal">Password issues are the most common (24% of tickets) and take the longest to resolve (7.7 hrs).</li>
+    <li class="reveal">Only 58% of tickets are resolved on first contact, so 42% need follow-up.</li>
+    <li class="reveal">Workload is uneven: Ben handles 17 tickets versus Ana's 7, and the two busiest technicians (Ben and Dina) have the lowest satisfaction.</li>
+  </ul>
+</section>
+
+<section class="block">
+  <div class="two-up">
+    <div class="reveal">
+      <h2>Recommendations</h2>
+      <ul class="block-list">
+        <li>Fix triage so Critical tickets are routed and answered fastest.</li>
+        <li>Add a self-service password reset tool or better documentation.</li>
+        <li>Rebalance assignments and train for first-contact resolution.</li>
+      </ul>
+    </div>
+    <div class="reveal">
+      <h2>Limitations</h2>
+      <ul class="block-list">
+        <li>Only 50 tickets, so results may not generalize.</li>
+        <li>The PivotTable sheet uses COUNTIFS/AVERAGEIFS rather than a native Excel PivotTable.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <h2 class="reveal">Future improvements</h2>
+  <ul class="block-list reveal"><li>Analyze a larger, multi-month dataset to check for trends over time.</li><li>Build an interactive dashboard (for example in Power BI).</li></ul>
+</section>
+
+<section>
+  <nav class="proj-nav reveal" aria-label="Other projects">
+    <a class="btn light" href="project1.html"><i class="fa-solid fa-arrow-left"></i> Project 1</a>
+    <a class="btn outline" href="index.html#projects">All projects</a>
+    <a class="btn dark" href="project3.html">Project 3 <i class="fa-solid fa-arrow-right"></i></a>
+  </nav>
+</section>
+
+</main>
+
+<footer>
+  <p>&copy; 2026 Edsel Villanueva. All rights reserved.</p>
+</footer>
+
+<script>
+/* Shared behaviour for the project detail pages: reveal, mobile menu, theme toggle */
+
+/* ---------- SCROLL REVEAL ---------- */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      el.classList.add("show");
+      revealObserver.unobserve(el);
+      setTimeout(() => { el.style.transitionDelay = ""; }, 1200);
+    }
+  });
+}, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+
+document.querySelectorAll(".reveal").forEach((el) => {
+  const siblings = el.parentElement.querySelectorAll(":scope > .reveal");
+  const pos = Array.prototype.indexOf.call(siblings, el);
+  el.style.transitionDelay = Math.min(pos, 4) * 90 + "ms";
+  revealObserver.observe(el);
+});
+
+/* ---------- MOBILE MENU ---------- */
+const menu = document.getElementById("menu");
+const menuBtn = document.getElementById("menuBtn");
+menuBtn.addEventListener("click", () => {
+  const open = menu.classList.toggle("open");
+  menuBtn.setAttribute("aria-expanded", open);
+  menuBtn.innerHTML = open ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+});
+
+/* ---------- LIGHT / DARK MODE (shares the saved choice with index.html) ---------- */
+const themeBtn = document.getElementById("themeBtn");
+const root = document.documentElement;
+function setIcon() {
+  const dark = root.getAttribute("data-theme") === "dark";
+  themeBtn.innerHTML = dark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+}
+setIcon();
+themeBtn.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try { localStorage.setItem("theme", next); } catch (e) {}
+  setIcon();
+  themeBtn.classList.remove("spin");
+  void themeBtn.offsetWidth;
+  themeBtn.classList.add("spin");
+});
+
+/* safety net: never leave content hidden if the observer does not fire */
+setTimeout(() => document.querySelectorAll(".reveal").forEach((el) => el.classList.add("show")), 2500);
+</script>
+</body>
+</html>
